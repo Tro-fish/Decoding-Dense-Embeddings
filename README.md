@@ -12,12 +12,12 @@ A reference implementation of **Sparse Autoencoder (SAE)–based DPR models inte
 
 ## 🗺️ Table of Contents
 1. [Methodology Overview](#methodology-overview)
-2. Requirements
-3. SAE Training & Evaluation
-4. [Generating Latent Concept Descriptions](#generating-latent-concept-descriptions)  
-5. [CL-SR Indexing](#cl-sr-indexing)  
-6. [CL-SR Inference & Benchmarking](#cl-sr-inference--benchmarking)  
-7. [Citation](#citation)  
+2. [Requirements](#requirements)
+3. [SAE Training & Evaluation](#sae-training--evaluation)
+4. [Generating Latent Concept Descriptions](#generating-latent-concept-descriptions)
+5. [CL-SR Indexing](#cl-sr-indexing)
+6. [CL-SR Inference & Benchmarking](#cl-sr-inference--benchmarking)
+7. [Citation](#citation)
 8. [License](#license)
 
 ---
@@ -32,7 +32,7 @@ Overview of our method. We first **train a SAE** to decompose dense embeddings i
 
 ---
 
-## 2. Requirements
+## Requirements
 
 ### Setup `python` environment
 ```
@@ -57,7 +57,7 @@ This link also provide TREC-DL 19/20, MSMARCO Dev queries, qrels for evaluation.
 
 ---
 
-## 3. SAE Training & Evaluation
+## SAE Training & Evaluation
 ```bash
 # Train SAE (example: k = 32, MSMARCO train passages)
 python sae/train_sae.py \
@@ -74,7 +74,7 @@ python sae/eval_sae.py \
 ```
 ---
 
-## 4. Generating Latent Concept Description
+## Generating Latent Concept Descriptions
 
 We use GPT-4.1 Mini api to generate a description for each latent concept.
 Using the top 30 most activating passages per latent, this process costs approximately $7.
@@ -89,7 +89,7 @@ python sae/generate_descriptions.py \
 ```
 ---
 
-## 5. CL-SR Indexing
+## CL-SR Indexing
 ```
 # Build inverted index of latent concepts (max 24 per doc)
 python clsr/build_index.py \
@@ -100,7 +100,7 @@ python clsr/build_index.py \
 ```
 ---
 
-## 6. CL-SR Inference & Benchmarking
+## CL-SR Inference & Benchmarking
 ```
 # Search
 python clsr/search.py \
@@ -116,7 +116,10 @@ python tools/trec_eval.py \
 ```
 ---
 
-## 7. Citation
+## Citation
+
+---
+## License
 
 ---
 
