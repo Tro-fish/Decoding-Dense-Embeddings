@@ -11,9 +11,9 @@ A reference implementation of **Sparse Autoencoder (SAE)–based DPR models inte
 ---
 
 ## 🗺️ Table of Contents
-1. [Methodology Overview](#methodology-overview)  
-2. [Requirements](#requirements)  
-3. [SAE Training & Evaluation](#sae-training--evaluation)  
+1. [Methodology Overview](#methodology-overview)
+2. Requirements
+3. SAE Training & Evaluation
 4. [Generating Latent Concept Descriptions](#generating-latent-concept-descriptions)  
 5. [CL-SR Indexing](#cl-sr-indexing)  
 6. [CL-SR Inference & Benchmarking](#cl-sr-inference--benchmarking)  
@@ -22,7 +22,8 @@ A reference implementation of **Sparse Autoencoder (SAE)–based DPR models inte
 
 ---
 
-## 1. Methodology Overview
+## Methodology Overview
+
 <div align="center">
 <img src="https://github.com/user-attachments/assets/dd907ab3-e66d-49fe-930d-56351c7b7c79" width="100%" alt="Framework overview"/>
 </div>
@@ -119,7 +120,7 @@ python tools/trec_eval.py \
 
 ---
 
-## 8. Citation
+## License
 
 This project is licensed under the Apache 2.0 License.
 MS MARCO data is provided under Microsoft’s non-commercial research terms.
