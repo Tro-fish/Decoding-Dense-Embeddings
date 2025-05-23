@@ -58,6 +58,7 @@ This link also provide TREC-DL 19/20, MSMARCO Dev queries, qrels for evaluation.
 ---
 
 ## SAE Training & Evaluation
+### Train SAEs
 ```bash
 # Train SAE (example: k = 32, MSMARCO train passages)
 python sae/train_sae.py \
@@ -65,8 +66,18 @@ python sae/train_sae.py \
     --hidden-mult 32 --k 32 --batch 4096 \
     --lr 5e-5 --epochs 100 \
     --out checkpoints/sae_k32.pt
+```
+### Evaluate SAE
+```bash
+# Evaluate NMSE
+python sae/eval_sae.py \
+    --sae checkpoints/sae_k32.pt \
+    --embeddings data/msmarco_dev/embed.npy \
+    --qrels data/trec_dl19/qrels.txt
+```
 
-# Evaluate reconstruction & IR fidelity (Dev, TREC-DL19/20)
+```bash
+# Evaluate Reconstruction Performance
 python sae/eval_sae.py \
     --sae checkpoints/sae_k32.pt \
     --embeddings data/msmarco_dev/embed.npy \
