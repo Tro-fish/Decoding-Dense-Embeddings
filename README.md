@@ -67,7 +67,7 @@ python sae/train_sae.py \
     --lr 5e-5 --epochs 100 \
     --out checkpoints/sae_k32.pt
 ```
-### Evaluate SAE
+### Evaluate SAEs
 ```bash
 # Evaluate NMSE
 python sae/eval_sae.py \
