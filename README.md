@@ -127,7 +127,7 @@ Retrieval using latent concepts involves two phases:
    - Extract latent concepts from each query  
    - Query the inverted index to rank passages
 
-We’ll support Anserini for indexing and search. For now, use the provided custom scripts.  
+We’ll support Anserini(https://github.com/castorini/anserini) for indexing and search. For now, use the provided custom scripts.  
 
 ```
 python clsr/build_index.py \
