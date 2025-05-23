@@ -76,8 +76,10 @@ python sae/eval_sae.py \
 
 ## Generating Latent Concept Descriptions
 
+After training the SAE, we use an LLM to generate a natural-language description for each latent concept.
 We use GPT-4.1 Mini api to generate a description for each latent concept.
 Using the top 30 most activating passages per latent, this process costs approximately $7.
+With this descriptions, we can understand DPR models embeddings and the similarity scoring process.
 
 ```
 # Example: generate descriptions from top-activating passages
@@ -90,6 +92,9 @@ python sae/generate_descriptions.py \
 ---
 
 ## CL-SR Indexing
+
+After training the SAE, latent concepts can serve as fundamental retrieval units. We index each passage by its activated latents for efficient retrieval.
+
 ```
 # Build inverted index of latent concepts (max 24 per doc)
 python clsr/build_index.py \
