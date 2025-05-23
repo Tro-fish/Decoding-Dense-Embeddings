@@ -67,33 +67,46 @@ python sae/train_sae.py \
     --lr 5e-5 --epochs 100 \
     --out checkpoints/sae_k32.pt
 ```
+
+
 ### Evaluate SAEs
-```bash
-# Evaluate NMSE
-python sae/eval_sae.py \
-    --sae checkpoints/sae_k32.pt \
-    --embeddings data/msmarco_dev/embed.npy \
-    --qrels data/trec_dl19/qrels.txt
-```
+
+After training the SAE, reconstruct the original DPR embeddings and evaluate how well the SAE preserves their information:
+
+- **Preservation of IR Performance**
+    - Perform dense retrieval using the reconstructed embeddings -> reconstructed ranking
+- **Ranking Result Reconstruction Fidelity**
+    - Compute Spearman’s rank correlation between the original ranking and the reconstructed ranking.
 
 ```bash
-# Evaluate Reconstruction Performance
+# Reconstruct DPR models embedding
+python sae/reconstruct_embedding.py \
+    --checkpoint checkpoints/sae_k32.pt \
+    --input_embs_path embs/input/ \
+    --recon_embs_save_path embs/recon/ \
+
+# Evaluate reconstructed embedding
 python sae/eval_sae.py \
-    --sae checkpoints/sae_k32.pt \
-    --embeddings data/msmarco_dev/embed.npy \
-    --qrels data/trec_dl19/qrels.txt
+    --checkpoint checkpoints/sae_k32.pt \
+    --recon_embs_path embs/recon/ \
+    --query_path dev \ # trec_dl2019,2020
 ```
 ---
 
 ## Generating Latent Concept Descriptions
 
-After training the SAE, we use an LLM to generate a natural-language description for each latent concept.
-We use GPT-4.1 Mini api to generate a description for each latent concept.
+We use GPT-4.1 Mini api to generate a natural-language description for each latent concept.
 Using the top 30 most activating passages per latent, this process costs approximately $7.
 With this descriptions, we can understand DPR models embeddings and the similarity scoring process.
 
 ```
-# Example: generate descriptions from top-activating passages
+# Extract latent concepts using trained SAE
+python sae/reconstruct_embedding.py \
+    --checkpoint checkpoints/sae_k32.pt \
+    --input_embs_path embs/input/ \
+    --latent_concepts_save_path embs/recon/ \
+
+# Generate descriptions from top-activating passages
 python sae/generate_descriptions.py \
   --sae checkpoints/sae_k32.pt \
   --topK 32 \
@@ -104,19 +117,29 @@ python sae/generate_descriptions.py \
 
 ## CL-SR Indexing
 
-After training the SAE, latent concepts can serve as fundamental retrieval units. We index each passage by its activated latents for efficient retrieval.
+Retrieval using latent concepts involves two phases:
+
+1. **Indexing**  
+   - Extract latent concepts from each passage  
+   - Build an inverted index over those latents
+
+2. **Search**  
+   - Extract latent concepts from each query  
+   - Query the inverted index to rank passages
+
+We’ll support Anserini for indexing and search. For now, use the provided custom scripts.  
 
 ```
-# Build inverted index of latent concepts (max 24 per doc)
 python clsr/build_index.py \
   --sae checkpoints/sae_k32.pt \
-  --docs data/msmarco_corpus.tsv \
+  --input_embs_path embs/input/ \
   --max-latents 24 \
   --index runs/msmarco_latent24/
 ```
 ---
 
 ## CL-SR Inference & Benchmarking
+
 ```
 # Search
 python clsr/search.py \
@@ -128,6 +151,7 @@ python clsr/search.py \
 # Evaluate
 python tools/evaluate_all.py \
   --run runs/dev.rank \
+  --index_path runs/index \
   --hyperparameters 0.6 1.5 2.5
 ```
 ---
