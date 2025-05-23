@@ -141,5 +141,5 @@ python tools/evaluate_all.py \
 
 ## License
 
-This project is licensed under the Apache 2.0 License.
+This project is licensed under the Apache 2.0 License.\
 MS MARCO data is provided under Microsoft’s non-commercial research terms.
