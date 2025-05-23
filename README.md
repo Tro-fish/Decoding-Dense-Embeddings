@@ -110,9 +110,9 @@ python clsr/search.py \
   --out runs/dev.rank
 
 # Evaluate
-python tools/trec_eval.py \
+python tools/evaluate_all.py \
   --run runs/dev.rank \
-  --qrels data/msmarco_dev/qrels.txt
+  --hyperparameters 0.6 1.5 2.5
 ```
 ---
 
