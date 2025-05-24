@@ -94,7 +94,7 @@ python sae/reconstruct_embedding.py \
     --recon_embs_save_path embs/recon/ \
 
 # Evaluate reconstructed embedding's IR performance
-bash run.sh evaluate /recon_embs_save_path/recon_embs.npy
+bash run.sh evaluate true /recon_embs_save_path/recon_embs.npy
 ```
 ---
 
