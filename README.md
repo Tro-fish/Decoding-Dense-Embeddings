@@ -116,7 +116,7 @@ python sae/extract_latent_concepts.py \
 python sae/generate_descriptions.py \
   --sae checkpoints/sae_k32.pt \
   --topK 30 \
-  --latent_concepts latent_concepts/passages_latent_concepts.jsonl \
+  --latent_concepts sae/latent_concepts/passages_latent_concepts.jsonl \
   --passages data/msmarco_bm25_official/passages.jsonl.gz \
   --out descriptions/latent32.json
 ```
@@ -127,7 +127,7 @@ python sae/generate_descriptions.py \
 Retrieval using latent concepts involves two phases:
 
 1. **Indexing**  
-   - Extract latent concepts from each passage  
+   - Extract latent concepts from each passage
    - Build an inverted index over those latents
 
 2. **Search**  
@@ -137,7 +137,7 @@ Retrieval using latent concepts involves two phases:
 We’ll support Anserini(https://github.com/castorini/anserini) for indexing and search. For now, use the provided custom scripts.  
 
 ```
-python clsr/build_index.py \
+python clsr/indexing.py \
   --sae checkpoints/sae_k32.pt \
   --input_embs_path embs/input/ \
   --max-latents 24 \
@@ -148,16 +148,9 @@ python clsr/build_index.py \
 ## CL-SR Inference & Benchmarking
 
 ```
-# Search
-python clsr/search.py \
-  --index runs/msmarco_latent24/ \
-  --sae   checkpoints/sae_k32.pt \
-  --queries data/msmarco_dev/query.tsv \
-  --out runs/dev.rank
-
 # Evaluate
 python tools/evaluate_all.py \
-  --run runs/dev.rank \
+  --query_path queries \
   --index_path runs/index \
   --hyperparameters 0.6 1.5 2.5
 ```
