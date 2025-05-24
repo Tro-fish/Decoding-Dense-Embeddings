@@ -152,10 +152,10 @@ python latent_retrieve.py \
     --index_path inverted_index.pkl \
     --query_latents_path sae/latent_concepts/query_latents.json \
     --output_path rank_output.txt \
-    --split trec_dl2019
+    --split dev
 
 python evaluate.py \
-  --eval_data trec_dl2019 \
+  --eval_data dev \
   --result_path ./results/rank_output.txt \
 ```
 ---
