@@ -107,16 +107,17 @@ With this descriptions, we can understand DPR models embeddings and the similari
 
 ```
 # Extract latent concepts using trained SAE
-python sae/reconstruct_embedding.py \
+python sae/extract_latent_concepts.py \
     --checkpoint checkpoints/sae_k32.pt \
     --input_embs_path embs/input/ \
-    --latent_concepts_save_path embs/recon/ \
+    --latent_concepts_save_path latent_concepts \
 
 # Generate descriptions from top-activating passages
 python sae/generate_descriptions.py \
   --sae checkpoints/sae_k32.pt \
-  --topK 32 \
-  --passages data/msmarco_dev/passages.jsonl \
+  --topK 30 \
+  --latent_concepts latent_concepts/passages_latent_concepts.jsonl \
+  --passages data/msmarco_bm25_official/passages.jsonl.gz \
   --out descriptions/latent32.json
 ```
 ---
