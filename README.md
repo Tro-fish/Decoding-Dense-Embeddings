@@ -99,6 +99,7 @@ bash run.sh evaluate /recon_embs_save_path/recon_embs.npy
 ---
 
 ## Generating Latent Concept Descriptions
+![image](https://github.com/user-attachments/assets/9ab1c928-2b8a-4c63-9157-9a3f21aa229f)
 
 We use GPT-4.1 Mini api to generate a natural-language description for each latent concept.
 Using the top 30 most activating passages per latent, this process costs approximately $7.
