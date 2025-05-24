@@ -116,7 +116,7 @@ python sae/extract_latent_concepts.py \
 python sae/generate_descriptions.py \
   --sae checkpoints/sae_k32.pt \
   --topK 30 \
-  --latent_concepts sae/latent_concepts/passages_latent_concepts.jsonl \
+  --latent_concepts sae/latent_concepts/passages_latents.jsonl \
   --passages data/msmarco_bm25_official/passages.jsonl.gz \
   --out descriptions/latent32.json
 ```
@@ -138,10 +138,9 @@ We’ll support Anserini(https://github.com/castorini/anserini) for indexing and
 
 ```
 python clsr/indexing.py \
-  --sae checkpoints/sae_k32.pt \
-  --input_embs_path embs/input/ \
-  --max-latents 24 \
-  --index runs/msmarco_latent24/
+  --passage_latents sae/latent_concepts/passages_latents.jsonl \
+  --index_save_path inverted_index.pkl \
+  --max_latents 24
 ```
 ---
 
@@ -149,10 +148,15 @@ python clsr/indexing.py \
 
 ```
 # Evaluate
-python tools/evaluate_all.py \
-  --query_path queries \
-  --index_path runs/index \
-  --hyperparameters 0.6 1.5 2.5
+python latent_retrieve.py \
+    --index_path inverted_index.pkl \
+    --query_latents_path sae/latent_concepts/query_latents.json \
+    --output_path rank_output.txt \
+    --split trec_dl2019
+
+python evaluate.py \
+  --eval_data trec_dl2019 \
+  --result_path ./results/rank_output.txt \
 ```
 ---
 
