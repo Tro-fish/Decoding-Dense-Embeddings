@@ -118,6 +118,7 @@ def _worker_batch_search(gpu_idx: int):
     query_data = {query_id: embed for query_id, embed in zip(query_ids, query_embeds)}
     save_path = f"embs/{args.search_split}"
     torch.save(query_embeds, save_path) # save query_embs
+    if args.search_split == 'train': return
 
     #logger.info(f"query_embeds save to {save_path}")
     #logger.info(f"query_embeds.shape: {query_embeds.shape}")
@@ -194,6 +195,7 @@ def _batch_search_queries():
 
     logger.info('Use {} gpus'.format(gpu_count))
     torch.multiprocessing.spawn(_worker_batch_search, args=(), nprocs=gpu_count)
+    if args.search_split == 'train': return
     #_worker_batch_search(0)
     logger.info('Done batch search queries')
 

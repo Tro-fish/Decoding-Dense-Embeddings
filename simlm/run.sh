@@ -20,6 +20,7 @@ export IS_RANK_ALL=false
 if [ "$MODE" == "encode" ]; then
   echo "Encoding corpus passages..."
   bash scripts/encode_marco.sh intfloat/simlm-base-msmarco-finetuned
+  bash scripts/search_marco.sh intfloat/simlm-base-msmarco-finetuned train --is_reconstruction $IS_RECONSTRUCTION
 fi
 
 if [ "$MODE" == "evaluate" ]; then
