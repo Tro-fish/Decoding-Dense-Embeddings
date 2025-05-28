@@ -110,6 +110,7 @@ With this descriptions, we can understand DPR models embeddings and the similari
 python sae/extract_latent_concepts.py \
     --checkpoint checkpoints/sae_k32.pt \
     --input_embs_path embs/input/ \
+    --model_threshold 0.160438 \
     --latent_concepts_save_path latent_concepts \
 
 # Generate descriptions from top-activating passages
