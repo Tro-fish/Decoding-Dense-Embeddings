@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import glob
 import tqdm
 import torch
@@ -60,7 +61,6 @@ def _query_transform_func(tokenizer: PreTrainedTokenizerFast,
 
 @torch.no_grad()
 def _worker_encode_queries(gpu_idx: int) -> Tuple:
-    # fail fast if shard does not exist
     _get_all_shards_path()
 
     query_id_to_text = load_queries(path=os.path.join(args.data_dir, '{}_queries.tsv'.format(args.search_split)),
@@ -69,11 +69,9 @@ def _worker_encode_queries(gpu_idx: int) -> Tuple:
     queries = [query_id_to_text[query_id] for query_id in query_ids]
     dataset = Dataset.from_dict({'query_id': query_ids,
                                  'query': queries})
-    dataset = dataset.shard(num_shards=torch.cuda.device_count(),
-                            index=gpu_idx,
-                            contiguous=True)
 
-    # only keep data for current shard
+    # dataset = dataset.shard(num_shards=torch.cuda.device_count(), index=gpu_idx, contiguous=True)
+
     query_ids = dataset['query_id']
     query_id_to_text = {qid: query_id_to_text[qid] for qid in query_ids}
 
@@ -116,10 +114,10 @@ def _worker_batch_search(gpu_idx: int):
     embeds_path_list = _get_all_shards_path()
     query_embeds, query_ids, query_id_to_text = _worker_encode_queries(gpu_idx)
     query_data = {query_id: embed for query_id, embed in zip(query_ids, query_embeds)}
-    save_path = f"embs/{args.search_split}"
-    torch.save(query_embeds, save_path) # save query_embs
+    save_path = f"tmp/query_embs/{args.search_split}"
+    torch.save(query_embeds, save_path) # query 임베딩 저장
     if args.search_split == 'train': return
-
+    
     #logger.info(f"query_embeds save to {save_path}")
     #logger.info(f"query_embeds.shape: {query_embeds.shape}")
     #logger.info(f"(query_ids): {(query_ids)}")
@@ -137,14 +135,20 @@ def _worker_batch_search(gpu_idx: int):
                                mininterval=5):
             batch_query_embed = query_embeds[start:(start + args.search_batch_size)]
             batch_query_ids = query_ids[start:(start + args.search_batch_size)]
+            # query embedding과 passage embedding 계산
             batch_score = torch.mm(batch_query_embed, shard_psg_embed.t()) # [Batch, Passages]
+            # 모든 passage들 중에서 topk개만 sort
             batch_sorted_score, batch_sorted_indices = torch.topk(batch_score, k=args.search_topk, dim=-1, largest=True) # [Batch, TopK]
 
             for batch_idx, query_id in enumerate(batch_query_ids):
+                # 배치의 상위 k개의 점수와 인덱스를 리스트로 변환
                 cur_scores = batch_sorted_score[batch_idx].cpu().tolist()
                 cur_indices = [idx + psg_idx_offset for idx in batch_sorted_indices[batch_idx].cpu().tolist()]
+                # 현재 쿼리 ID에 대해 점수와 인덱스를 추가
                 query_id_to_topk[query_id] += list(zip(cur_scores, cur_indices))
+                # 점수에 따라서 정렬
                 query_id_to_topk[query_id] = sorted(query_id_to_topk[query_id], key=lambda t: (-t[0], t[1]))
+                # 상위 k개의 결과만을 유지 (각 쿼리 ID에 대해 상위 k개의 점수와 해당 passage index를 유지)
                 query_id_to_topk[query_id] = query_id_to_topk[query_id][:args.search_topk]
 
         psg_idx_offset += shard_psg_embed.shape[0]
@@ -193,14 +197,18 @@ def _batch_search_queries():
         logger.error('No gpu available')
         return
 
-    logger.info('Use {} gpus'.format(gpu_count))
-    torch.multiprocessing.spawn(_worker_batch_search, args=(), nprocs=gpu_count)
-    if args.search_split == 'train': return
-    #_worker_batch_search(0)
+    # 단일 GPU 사용
+    gpu_count = 1
+    logger.info('Use {} gpu'.format(gpu_count))
+    #torch.multiprocessing.spawn(_worker_batch_search, args=(), nprocs=gpu_count)
+    _worker_batch_search(0)
+
+    if args.search_split == 'train':
+        return
+
     logger.info('Done batch search queries')
 
     _compute_and_save_metrics(gpu_count)
-
 
 if __name__ == '__main__':
     _batch_search_queries()
