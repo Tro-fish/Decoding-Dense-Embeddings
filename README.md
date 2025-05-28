@@ -79,7 +79,7 @@ python sae/train_sae.py \
     --input_embs_path embs/input/ \
     --hidden-mult 32 --k 32 --batch 4096 \
     --lr 5e-5 --epochs 100 \
-    --out checkpoints/sae_k32.pt
+    --out checkpoints/
 ```
 
 ### Evaluate SAEs
@@ -88,10 +88,13 @@ After training the SAE, you can reconstruct the original DPR embeddings and eval
 
 ```bash
 # Reconstruct DPR model embeddings using a trained SAE
+# model can be saved with different name
+# model threshold is saved on model name as mean_of_min_act
 python sae/reconstruct_embedding.py \
-    --checkpoint checkpoints/sae_k32.pt \
+    --checkpoint checkpoints/sae_32_k32_mean_of_min_act_0.160438.pt \
     --input_embs_path embs/input/ \
     --recon_embs_save_path embs/recon/ \
+    --model_threshold 0.160438
 
 # Evaluate reconstructed embedding's IR performance
 bash run.sh evaluate true /recon_embs_save_path/recon_embs.npy
@@ -107,15 +110,18 @@ With this descriptions, we can understand DPR models embeddings and the similari
 
 ```
 # Extract latent concepts using trained SAE
+# model can be saved with different name
+# model threshold is saved on model name as mean_of_min_act
 python sae/extract_latent_concepts.py \
-    --checkpoint checkpoints/sae_k32.pt \
+    --checkpoint checkpoints/sae_32_k32_mean_of_min_act_0.160438.pt \
     --input_embs_path embs/input/ \
     --model_threshold 0.160438 \
     --latent_concepts_save_path latent_concepts \
 
 # Generate descriptions from top-activating passages
+# model can be saved with different name
 python sae/generate_descriptions.py \
-  --sae checkpoints/sae_k32.pt \
+  --sae checkpoints/sae_32_k32_mean_of_min_act_0.160438.pt \
   --topK 30 \
   --latent_concepts sae/latent_concepts/passages_latents.jsonl \
   --passages data/msmarco_bm25_official/passages.jsonl.gz \
