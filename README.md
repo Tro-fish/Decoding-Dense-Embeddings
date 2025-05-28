@@ -75,6 +75,7 @@ bash run.sh encode
 ### Train SAEs
 ```bash
 # Train SAE (example: k = 32, MSMARCO train passages)
+# This will also return NMSE of the trained model
 python sae/train_sae.py \
     --input_embs_path embs/input/ \
     --hidden-mult 32 --k 32 --batch 4096 \
@@ -112,20 +113,19 @@ With this descriptions, we can understand DPR models embeddings and the similari
 # Extract latent concepts using trained SAE
 # model can be saved with different name
 # model threshold is saved on model name as mean_of_min_act
-python sae/extract_latent_concepts.py \
+python extract_latent_concepts.py \
     --checkpoint checkpoints/sae_32_k32_mean_of_min_act_0.160438.pt \
     --input_embs_path embs/input/ \
     --model_threshold 0.160438 \
-    --latent_concepts_save_path latent_concepts \
+    --latent_concepts_save_path latent_concepts/passages_latents.jsonl \
 
 # Generate descriptions from top-activating passages
-# model can be saved with different name
-python sae/generate_descriptions.py \
-  --sae checkpoints/sae_32_k32_mean_of_min_act_0.160438.pt \
+python generate_descriptions.py \
   --topK 30 \
-  --latent_concepts sae/latent_concepts/passages_latents.jsonl \
+  --latent_concepts latent_concepts/passages_latents.jsonl \
   --passages data/msmarco_bm25_official/passages.jsonl.gz \
-  --out descriptions/latent32.json
+  --out descriptions/latent32_desc.jsonl \
+  --api your_openai_api_key_here
 ```
 ---
 
