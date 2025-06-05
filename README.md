@@ -168,9 +168,17 @@ python evaluate.py \
 ---
 
 ## Citation
+If you use this code or find it helpful, please cite our paper:
 
----
-## License
+```bibtex
+@article{park2025decoding,
+  title     = {Decoding Dense Embeddings: Sparse Autoencoders for Interpreting and Discretizing Dense Retrieval},
+  author    = {Seongwan Park and Taeklim Kim and Youngjoong Ko},
+  journal   = {arXiv preprint arXiv:2506.00041},
+  year      = {2025},
+  url       = {https://arxiv.org/abs/2506.00041}
+}
+```
 
 ---
 
