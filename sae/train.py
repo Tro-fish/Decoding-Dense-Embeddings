@@ -132,7 +132,7 @@ def main():
         "--out", type=str, required=True, help="Output file path for the trained model"
     )
     parser.add_argument("--dead_threshold_step", type=int, required=False, default=20)
-    parser.add_argument("--aux_loss_alpha", type=float, required=False, default=1 / 16)
+    parser.add_argument("--aux_loss_alpha", type=float, required=False, default=1 / 32)
     args = parser.parse_args()
 
     print(f"Embeddings: {args.embeddings}")
