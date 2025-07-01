@@ -49,7 +49,7 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 ### 📥 Download MSMARCO Datasets
 
 We provide the preprocessed MSMARCO passage retrieval datasets for convenience.  
-Download link: [Google Drive](https://drive.google.com/drive/folders/1YlhrcCvZNvDE1DPLdwWMS7V9Xr3kgewb?usp=sharing)
+Download link: [MSMARCO Passage Retrieval](https://microsoft.github.io/msmarco/)
 
 This includes:
 - All 8.8M MSMARCO passages
