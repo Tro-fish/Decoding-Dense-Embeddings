@@ -5,9 +5,10 @@ Sparse Autoencoders for Interpretable Dense Retrieval
 ![PyTorch](https://img.shields.io/badge/pytorch-2.x-lightgrey)
 ![License](https://img.shields.io/badge/license-Apache%202.0-green)
 
-A official implementation of **Sparse Autoencoder (SAE)–based DPR models interpretation** and **Concept-Level Sparse Retrieval (CL-SR)**
+A official implementation of **Sparse Autoencoder (SAE)–based DPR models interpretation and Concept-Level Sparse Retrieval (CL-SR)**
 
-> **“Decoding Dense Embeddings: Sparse Autoencoders for Interpreting and Discretizing Dense Retrieval.”**  
+[*Arxiv Preprint*](https://arxiv.org/abs/2506.00041)
+
 ---
 
 ## 🗺️ Table of Contents
